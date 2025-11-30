@@ -4,6 +4,33 @@ This template is an opinionated, production-ready REST API starter designed for 
 
 By standardizing the foundational patterns (repository-service-controller layers, MapStruct for DTOs, Flyway for migrations, centralized security configuration), developers can focus on implementing business logic rather than reinventing authentication flows and user management. The template's extensive documentation, TODO-driven customization checklist, and easily extensible architecture make it a valuable tool for solo devs and full on dev teams alike who want to focus on building amazing apps quickly, consistently and with best practices built in from the start. 
 
+## 📚 What's Included
+
+This template uses the [KRD Spring API Starter](../krd-spring-starters) which provides:
+
+- **JWT Authentication** - Dual-token system (access + refresh)
+- **User Management** - Complete CRUD with soft delete, re-activation, and hard delete after x days
+- **Password Validation** - Configurable password policies (defaults to OWASP and NIST SP 800-63B password guidelines)
+- **Role Management** - Add/remove roles with audit logging
+- **Database Migrations** - Flyway migrations for users and roles tables
+- **API Documentation** - Swagger UI with Springdoc OpenAPI
+- **Security** - Pre-configured Spring Security with JWT filter
+
+See [docs/STARTER_REFERENCE.md](docs/STARTER_REFERENCE.md) for complete documentation.
+
+## 🏗️ Technology Stack
+
+- **Spring Boot 3.4.5** - Application framework
+- **Spring Security** - Authentication & authorization
+- **Spring Data JPA** - Database access
+- **MySQL** - Database
+- **Flyway** - Database migrations
+- **JWT (JJWT)** - Token-based authentication
+- **MapStruct** - DTO mapping
+- **Lombok** - Boilerplate reduction
+- **Springdoc OpenAPI** - API documentation
+- **Gradle** - Build tool
+
 ## ⚡ Quick Start
 
 ### Prerequisites
@@ -144,33 +171,6 @@ Search for `TODO` comments throughout the codebase for all customization points.
 
 - [ ] **`application.yaml`** - Update `spring.application.name`
   - *Why:* Used in logging, monitoring, and service discovery
-
-## 📚 What's Included
-
-This template uses the [KRD Spring API Starter](../krd-spring-starters) which provides:
-
-- **JWT Authentication** - Dual-token system (access + refresh)
-- **User Management** - Complete CRUD with soft delete
-- **Password Validation** - Configurable password policies
-- **Role Management** - Add/remove roles with audit logging
-- **Database Migrations** - Flyway migrations for users and roles tables
-- **API Documentation** - Swagger UI with Springdoc OpenAPI
-- **Security** - Pre-configured Spring Security with JWT filter
-
-See [docs/STARTER_REFERENCE.md](docs/STARTER_REFERENCE.md) for complete documentation.
-
-## 🏗️ Technology Stack
-
-- **Spring Boot 3.4.5** - Application framework
-- **Spring Security** - Authentication & authorization
-- **Spring Data JPA** - Database access
-- **MySQL** - Database
-- **Flyway** - Database migrations
-- **JWT (JJWT)** - Token-based authentication
-- **MapStruct** - DTO mapping
-- **Lombok** - Boilerplate reduction
-- **Springdoc OpenAPI** - API documentation
-- **Gradle** - Build tool
 
 ## 📖 Documentation
 
