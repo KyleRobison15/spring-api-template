@@ -1,6 +1,8 @@
 # Spring API Template
 
-This template is an opinionated, production-ready REST API starter designed for applications where user authentication, authorization and management is a central requirement. I take a convention-over-configuration approach to get developers building features in minutes instead of hours. Rather than starting from scratch and making dozens of architectural decisions, this template provides a battle-tested foundation with JWT dual-token authentication, comprehensive user management (including soft delete with auto-reactivation), role-based access control, pre-configured security, and even the initial DDL and DB migrations to setup your User tables right out of the box. 
+This template is an opinionated, production-ready REST API starter designed for applications where user authentication, authorization and management is a central requirement. It uses a convention-over-configuration approach to get developers building features in minutes instead of hours. 
+
+Rather than starting from scratch and making dozens of architectural decisions, this template provides a battle-tested foundation with JWT dual-token authentication, comprehensive user management (including soft delete with auto-reactivation), role-based access control, pre-configured security, and even the initial DDL and DB migrations to setup your User tables right out of the box. 
 
 By standardizing the foundational patterns (repository-service-controller layers, MapStruct for DTOs, Flyway for migrations, centralized security configuration), developers can focus on implementing business logic rather than reinventing authentication flows and user management. The template's extensive documentation, TODO-driven customization checklist, and easily extensible architecture make it a valuable tool for solo devs and full on dev teams alike who want to focus on building amazing apps quickly, consistently and with best practices built in from the start. 
 
