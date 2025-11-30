@@ -1,0 +1,56 @@
+# Test Profile Configuration
+# This file is loaded during integration tests
+
+spring:
+  datasource:
+    # H2 in-memory database for testing
+    url: jdbc:h2:mem:testdb;MODE=MySQL;DATABASE_TO_LOWER=TRUE;CASE_INSENSITIVE_IDENTIFIERS=TRUE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  jpa:
+    hibernate:
+      ddl-auto: validate  # Flyway will create schema
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+  # JWT Configuration for tests
+  jwt:
+    secret: test-secret-key-for-integration-tests-must-be-long-enough
+    accessTokenExpiration: 900
+    refreshTokenExpiration: 604800
+
+# CORS Configuration for tests
+cors:
+  allowed-origins:
+    - http://localhost:3000
+
+# Password Policy for tests
+app:
+  security:
+    password:
+      min-length: 8
+      max-length: 128
+      require-uppercase: true
+      require-lowercase: true
+      require-digit: true
+      require-special-char: true
+
+# User Management for tests
+user-management:
+  hard-delete:
+    enabled: false  # Disable scheduled hard delete in tests
+    retention-days: 30
+
+# Logging for tests
+logging:
+  level:
+    com.krd.api: DEBUG
+    org.springframework.security: DEBUG
