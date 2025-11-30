@@ -14,7 +14,7 @@ This template uses the [KRD Spring API Starter](../krd-spring-starters) which pr
 - **User Management** - Complete CRUD with soft delete, re-activation, and hard delete after x days
 - **Password Validation** - Configurable password policies (defaults to OWASP and NIST SP 800-63B password guidelines)
 - **Role Management** - Add/remove roles with audit logging
-- **Database Migrations** - Flyway migrations for users and roles tables
+- **Database Migrations** - V1 migration for users and roles tables (based on [starter template](https://github.com/KyleRobison15/krd-spring-starters/blob/main/spring-api-starter/src/main/resources/db/migration-templates/create_users_and_roles_tables.sql))
 - **API Documentation** - Swagger UI with Springdoc OpenAPI
 - **Security** - Pre-configured Spring Security with JWT filter
 

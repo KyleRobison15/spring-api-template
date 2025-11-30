@@ -240,6 +240,27 @@ user-management:
 
 ## Adding Custom Features
 
+### Database Migrations
+
+This template includes a V1 migration (`src/main/resources/db/migration/V1__create_users_and_roles_tables.sql`) that creates the base tables for user authentication:
+- `users` - User accounts with authentication fields
+- `user_roles` - User role assignments
+- `role_change_logs` - Audit trail for role changes
+
+**Migration Template Reference:**
+
+The V1 migration is based on the template maintained in the spring-api-starter repository. If the starter is updated with schema changes, you can reference the latest version here:
+
+[Migration Template in spring-api-starter](https://github.com/KyleRobison15/krd-spring-starters/blob/main/spring-api-starter/src/main/resources/db/migration-templates/create_users_and_roles_tables.sql)
+
+**Custom Migration Numbering:**
+
+Start your custom migrations from `V2__`:
+- `V2__add_custom_user_fields.sql`
+- `V3__create_orders_table.sql`
+- `V4__create_products_table.sql`
+- etc.
+
 ### Adding Custom User Fields
 
 **1. Update the User entity:**
@@ -284,7 +305,7 @@ public class UserDto extends BaseUserDto {
 
 **3. Create a Flyway migration:**
 
-`src/main/resources/db/migration/V10__add_custom_user_fields.sql`:
+`src/main/resources/db/migration/V2__add_custom_user_fields.sql`:
 ```sql
 ALTER TABLE users
 ADD COLUMN phone_number VARCHAR(20),
@@ -391,7 +412,7 @@ public class ProductController {
 
 **5. Create Flyway migration:**
 
-`src/main/resources/db/migration/V11__create_products_table.sql`:
+`src/main/resources/db/migration/V3__create_products_table.sql`:
 ```sql
 CREATE TABLE products (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
