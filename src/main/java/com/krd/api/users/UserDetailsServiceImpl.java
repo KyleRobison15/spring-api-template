@@ -1,7 +1,6 @@
-// TODO: Rename package to match your organization (e.g., com.yourcompany.yourapp.security)
-package com.krd.api.security;
+// TODO: Rename package to match your organization (e.g., com.yourcompany.yourapp.users)
+package com.krd.api.users;
 
-import com.krd.api.users.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
