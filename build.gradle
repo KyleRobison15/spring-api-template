@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.4.5'
 	id 'io.spring.dependency-management' version '1.1.7'
+	id 'org.flywaydb.flyway' version '10.21.0'
 }
 
 // TODO: Replace 'com.krd' with your company/organization package and 'spring-api-template' with your project name
@@ -53,4 +54,20 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+// Flyway configuration for running migrations from command line
+// TODO: Update database name (spring_api_db) to match your project
+flyway {
+	url = "jdbc:mysql://localhost:3306/spring_api_db?createDatabaseIfNotExist=true"
+	user = System.getenv('DB_USERNAME') ?: 'root'
+	password = System.getenv('DB_PASSWORD') ?: ''
+	locations = ['classpath:db/migration']
+
+	// Available Flyway tasks:
+	// - ./gradlew flywayMigrate  : Run pending migrations
+	// - ./gradlew flywayInfo     : Show migration status
+	// - ./gradlew flywayValidate : Validate applied migrations
+	// - ./gradlew flywayClean    : Drop all database objects (DANGER!)
+	// - ./gradlew flywayRepair   : Repair metadata table
 }

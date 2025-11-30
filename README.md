@@ -63,12 +63,17 @@ See [docs/STARTER_REFERENCE.md](docs/STARTER_REFERENCE.md) for complete document
    exit
    ```
 
-4. **Run the application**
+4. **Run database migrations** (optional - migrations also run automatically on app startup)
+   ```bash
+   ./gradlew flywayMigrate
+   ```
+
+5. **Run the application**
    ```bash
    ./gradlew bootRun
    ```
 
-5. **Access Swagger UI**
+6. **Access Swagger UI**
 
    Open [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
 

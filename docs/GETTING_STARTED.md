@@ -261,6 +261,29 @@ Start your custom migrations from `V2__`:
 - `V4__create_products_table.sql`
 - etc.
 
+**Running Migrations:**
+
+Migrations run automatically when you start the application, but you can also run them manually using the Flyway Gradle plugin:
+
+```bash
+# Run all pending migrations
+./gradlew flywayMigrate
+
+# Show migration status
+./gradlew flywayInfo
+
+# Validate applied migrations
+./gradlew flywayValidate
+
+# Repair metadata table (if needed)
+./gradlew flywayRepair
+
+# Clean database (DANGER: drops all objects!)
+./gradlew flywayClean
+```
+
+The Flyway plugin is configured in `build.gradle` to use the same database connection as your application (from `.env` file).
+
 ### Adding Custom User Fields
 
 **1. Update the User entity:**
