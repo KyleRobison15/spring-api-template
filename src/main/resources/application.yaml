@@ -1,0 +1,56 @@
+# TODO: Update spring.application.name to match your project name
+spring:
+  application:
+    name: spring-api-template
+
+  # JWT Configuration
+  # TODO: Set JWT_SECRET environment variable (see .env.example)
+  jwt:
+    secret: ${JWT_SECRET}
+    # TODO: Review and adjust token expiration times based on your security requirements
+    # Access token expiration (in seconds)
+    # 900s = 15 minutes (recommended for production)
+    accessTokenExpiration: 900
+    # Refresh token expiration (in seconds)
+    # 604800s = 7 days
+    refreshTokenExpiration: 604800
+
+  # Active profile (dev, prod, etc.)
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+
+# CORS Configuration
+# TODO: Update with your actual frontend URLs
+cors:
+  allowed-origins:
+    - http://localhost:5173  # Vite default port
+    - http://localhost:3000  # React/Next.js default port
+
+# Password Policy Configuration
+# TODO: Customize these password rules based on your security requirements
+app:
+  security:
+    password:
+      min-length: 8              # Minimum password length
+      max-length: 128            # Maximum password length (allows passphrases)
+      require-uppercase: true    # Require at least one uppercase letter
+      require-lowercase: true    # Require at least one lowercase letter
+      require-digit: true        # Require at least one digit
+      require-special-char: true # Require at least one special character
+
+# User Management Configuration
+# TODO: Review hard delete settings for your data retention policy
+# Controls automatic hard deletion of soft-deleted users
+user-management:
+  hard-delete:
+    enabled: true        # Enable/disable scheduled hard delete
+    retention-days: 365  # Days to keep soft-deleted users before permanent deletion
+
+# Springdoc OpenAPI (Swagger UI) Configuration
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha

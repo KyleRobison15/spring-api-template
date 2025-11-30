@@ -1,0 +1,31 @@
+# Development Profile Configuration
+# This file is loaded when spring.profiles.active=dev
+
+# TODO: Update database configuration to match your local setup
+spring:
+  datasource:
+    # TODO: Update database name (spring_api_db) to match your project
+    url: jdbc:mysql://localhost:3306/spring_api_db?createDatabaseIfNotExist=true
+    # TODO: Update database credentials (or use environment variables)
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD}
+
+  jpa:
+    # Show SQL queries in console (helpful for debugging)
+    show-sql: true
+    # Hibernate DDL auto (validate = check schema matches entities)
+    # Use Flyway migrations instead of hibernate auto DDL
+    hibernate:
+      ddl-auto: validate
+    # Format SQL output for readability
+    properties:
+      hibernate:
+        format_sql: true
+
+# Logging Configuration for Development
+logging:
+  level:
+    # TODO: Update package name (com.krd.api) to match your organization
+    com.krd.api: DEBUG
+    org.springframework.security: DEBUG
+    org.hibernate.SQL: DEBUG
