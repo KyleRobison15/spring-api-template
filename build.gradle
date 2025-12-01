@@ -1,8 +1,19 @@
+// Add buildscript dependencies for Flyway plugin (must come before plugins block)
+buildscript {
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath 'com.mysql:mysql-connector-j:8.3.0'
+		classpath 'org.flywaydb:flyway-mysql:10.15.0'
+	}
+}
+
 plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.4.5'
 	id 'io.spring.dependency-management' version '1.1.7'
-	id 'org.flywaydb.flyway' version '10.21.0'
+	id 'org.flywaydb.flyway' version '10.15.0'
 }
 
 // TODO: Replace 'com.krd' with your company/organization package and 'spring-api-template' with your project name
@@ -56,13 +67,33 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
+// Helper function to read variables from .env file
+def getEnvVar(String key, String defaultValue = '') {
+	def envFile = file('.env')
+	if (!envFile.exists()) {
+		return defaultValue
+	}
+
+	def value = envFile.readLines()
+			.findAll { line -> !line.startsWith('#') && line.contains('=') }
+			.collectEntries { line ->
+				def parts = line.split('=', 2)
+				[(parts[0].trim()): parts[1].trim()]
+			}
+			.get(key)
+
+	return value ?: defaultValue
+}
+
 // Flyway configuration for running migrations from command line
 // TODO: Update database name (spring_api_db) to match your project
+// Reads DB_USERNAME and DB_PASSWORD from .env file
 flyway {
 	url = "jdbc:mysql://localhost:3306/spring_api_db?createDatabaseIfNotExist=true"
-	user = System.getenv('DB_USERNAME') ?: 'root'
-	password = System.getenv('DB_PASSWORD') ?: ''
+	user = getEnvVar('DB_USERNAME', 'root')
+	password = getEnvVar('DB_PASSWORD', 'your-password')
 	locations = ['classpath:db/migration']
+	cleanDisabled = false
 
 	// Available Flyway tasks:
 	// - ./gradlew flywayMigrate  : Run pending migrations
