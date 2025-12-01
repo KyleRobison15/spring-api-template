@@ -99,12 +99,14 @@ Search for `TODO` comments throughout the codebase for all customization points.
 
 - [ ] **`src/main/java/com/krd/api/SpringApiTemplateApplication.java`** - Rename file and class to match your project
   - *Why:* Main application class should reflect your project name
+  - *Also update:* The package names in `@EnableJpaRepositories` and `@EntityScan` annotations
 
 ### 2. Package Renaming
 
 - [ ] **All Java files** - Replace package `com.krd.api` with `com.yourcompany.yourapp`
   - *Why:* Package names should reflect your organization
   - *Files affected:* All `.java` files in `src/main/java/com/krd/api/`
+  - *Important:* Also update `@EnableJpaRepositories` and `@EntityScan` in `SpringApiTemplateApplication.java`
 
 ### 3. Security Configuration
 

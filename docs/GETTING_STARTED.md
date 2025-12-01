@@ -155,6 +155,18 @@ logging:
     com.mycompany.myapp: INFO  # Update package name
 ```
 
+**Update JPA repository and entity scanning:**
+
+After renaming your package, you must update the `@EnableJpaRepositories` and `@EntityScan` annotations in your main application class to scan both your new package and the starter package:
+
+`SpringApiTemplateApplication.java`:
+```java
+@EnableJpaRepositories(basePackages = {"com.mycompany.myapp", "com.krd.starter.user"})
+@EntityScan(basePackages = {"com.mycompany.myapp", "com.krd.starter.user"})
+```
+
+**Why is this needed?** The starter provides repositories and entities (like `RoleChangeLogRepository` and `RoleChangeLog`) that your application needs to access. These annotations tell Spring Data JPA to scan for repositories and entities in both your application package and the starter package.
+
 ### Step 3: Rename Main Application Class
 
 Rename `SpringApiTemplateApplication.java` to match your project:

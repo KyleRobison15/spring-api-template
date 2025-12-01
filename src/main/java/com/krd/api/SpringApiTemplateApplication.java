@@ -3,6 +3,8 @@ package com.krd.api; // TODO: Replace 'com.krd.api' with your company/organizati
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 /**
  * Main Spring Boot application class for the Spring API Template.
@@ -19,8 +21,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * 2. Extend the User entity with your custom fields
  * 3. Configure application.yaml with your settings
  * 4. Add your business logic and endpoints
+ *
+ * IMPORTANT: The @EnableJpaRepositories and @EntityScan annotations are required to scan for
+ * repositories and entities in both your application package and the starter package.
+ * When you rename your package, update "com.krd.api" to match your new package name.
  */
 @SpringBootApplication
+@EnableJpaRepositories(basePackages = {"com.krd.api", "com.krd.starter.user"}) // TODO: Update "com.krd.api" when you rename your package
+@EntityScan(basePackages = {"com.krd.api", "com.krd.starter.user"}) // TODO: Update "com.krd.api" when you rename your package
 public class SpringApiTemplateApplication {
 
 	public static void main(String[] args) {
