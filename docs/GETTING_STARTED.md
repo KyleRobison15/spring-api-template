@@ -72,7 +72,7 @@ The API will start on `http://localhost:8080`
 
 ### 6. Verify Setup
 
-Open Swagger UI: http://localhost:8080/swagger-ui.html
+Open Swagger UI: http://localhost:8080/swagger-ui/index.html
 
 You should see the API documentation with:
 - Auth endpoints (`/auth/*`)
