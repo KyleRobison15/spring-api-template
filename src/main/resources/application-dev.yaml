@@ -17,10 +17,6 @@ spring:
     # Use Flyway migrations instead of hibernate auto DDL
     hibernate:
       ddl-auto: validate
-    # Format SQL output for readability
-    properties:
-      hibernate:
-        format_sql: true
 
 # Logging Configuration for Development
 logging:
