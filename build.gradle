@@ -41,6 +41,9 @@ dependencies {
 	// KRD Spring API Starter - Provides JWT auth, user management, validation
 	implementation 'com.krd:spring-api-starter:1.0.0'
 
+	// Security Rules Starter - Provides modular security configuration
+	implementation 'com.krd:security-rules-starter:1.0.0'
+
 	// Database
 	runtimeOnly 'com.mysql:mysql-connector-j'
 
