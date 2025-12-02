@@ -4,8 +4,7 @@ package com.krd.api.users;
 import com.krd.starter.user.BaseUser;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 /**
@@ -17,12 +16,15 @@ import lombok.experimental.SuperBuilder;
  * Add your custom fields below this class.
  *
  * IMPORTANT: Use @SuperBuilder instead of @Builder when extending BaseUser.
+ * IMPORTANT: When you have NO custom fields, use only @NoArgsConstructor (not @AllArgsConstructor).
+ *            When you ADD custom fields, you must use BOTH @NoArgsConstructor and @AllArgsConstructor.
  */
 @Entity
 @Table(name = "users")
 @Getter
 @Setter
-@SuperBuilder
+@NoArgsConstructor
+@SuperBuilder(toBuilder = true)
 public class User extends BaseUser {
 
     // TODO: Add your custom fields here
