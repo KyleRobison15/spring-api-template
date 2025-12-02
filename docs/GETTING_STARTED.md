@@ -458,21 +458,131 @@ CREATE TABLE products (
 );
 ```
 
-### Making Endpoints Public
+### Configuring Security Rules
 
-If you need public endpoints (e.g., public product listings), update `SecurityConfig`:
+The template uses a **modular security architecture** powered by the `spring-api-starter`. Security rules are automatically discovered and applied without requiring a custom `SecurityConfig`.
 
-`src/main/java/com/mycompany/myapp/config/SecurityConfig.java`:
+#### Default Public Endpoints
+
+The starter automatically makes these endpoints public (no authentication required):
+- `/auth/**` - Login, refresh token, logout
+- `POST /users` - User registration
+- `/swagger-ui/**`, `/v3/api-docs/**` - API documentation
+- `GET /actuator/health` - Health check
+
+**All other endpoints require authentication by default.**
+
+#### Adding Custom Security Rules
+
+To make your application-specific endpoints public or require specific roles, create a `SecurityRules` component:
+
+**Example: Product Security Rules**
+
+`src/main/java/com/mycompany/myapp/products/ProductSecurityRules.java`:
 ```java
-.authorizeHttpRequests(c -> {
-    securityRules.forEach(rule -> rule.configure(c));
+package com.mycompany.myapp.products;
 
-    c.requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-     .requestMatchers(HttpMethod.GET, "/actuator/health").permitAll()
-     .requestMatchers(HttpMethod.GET, "/products/**").permitAll()  // Add this
-     .anyRequest().authenticated();
-})
+import com.krd.security.SecurityRules;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AuthorizeHttpRequestsConfigurer;
+import org.springframework.stereotype.Component;
+
+/**
+ * Security rules for product endpoints.
+ */
+@Component
+public class ProductSecurityRules implements SecurityRules {
+    @Override
+    public void configure(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry registry) {
+        registry
+            // Allow anyone to browse products (no authentication)
+            .requestMatchers(HttpMethod.GET, "/products/**").permitAll()
+
+            // Require authentication to create products
+            .requestMatchers(HttpMethod.POST, "/products").authenticated()
+
+            // Require ADMIN role to delete products
+            .requestMatchers(HttpMethod.DELETE, "/products/**").hasRole("ADMIN");
+    }
+}
 ```
+
+**That's it!** The starter automatically:
+1. Discovers all `@Component` classes implementing `SecurityRules`
+2. Applies their rules to the security filter chain
+3. No `SecurityConfig` needed
+
+#### Multiple Security Rules
+
+You can have as many `SecurityRules` components as needed - organize by feature:
+
+```java
+// OrderSecurityRules.java
+@Component
+public class OrderSecurityRules implements SecurityRules {
+    @Override
+    public void configure(...registry) {
+        registry
+            .requestMatchers("/orders/**").authenticated()
+            .requestMatchers(HttpMethod.GET, "/orders/public/**").permitAll();
+    }
+}
+
+// AdminSecurityRules.java
+@Component
+public class AdminSecurityRules implements SecurityRules {
+    @Override
+    public void configure(...registry) {
+        registry
+            .requestMatchers("/admin/**").hasRole("ADMIN")
+            .requestMatchers("/analytics/**").hasAnyRole("ADMIN", "ANALYST");
+    }
+}
+```
+
+#### Advanced: Custom SecurityFilterChain
+
+**You typically don't need this.** Only create a custom `SecurityFilterChain` if you need to:
+- Add custom authentication filters
+- Change session management
+- Modify exception handling
+- Customize the entire security setup
+
+If you do need custom configuration:
+
+`src/main/java/com/mycompany/myapp/config/CustomSecurityConfig.java`:
+```java
+@Configuration
+public class CustomSecurityConfig {
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(
+            HttpSecurity http,
+            JwtAuthenticationFilter jwtAuthFilter,
+            CorsConfigurationSource corsConfigurationSource,
+            List<SecurityRules> securityRules) throws Exception {
+
+        return http
+            .csrf(AbstractHttpConfigurer::disable)
+            .cors(cors -> cors.configurationSource(corsConfigurationSource))
+            .sessionManagement(session ->
+                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authorizeHttpRequests(auth -> {
+                // Apply all discovered SecurityRules
+                securityRules.forEach(rule -> rule.configure(auth));
+
+                // Your custom base rules
+                auth.requestMatchers("/custom/**").permitAll()
+                    .anyRequest().authenticated();
+            })
+            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+            .build();
+    }
+}
+```
+
+**Note:** Creating this bean overrides the starter's default `SecurityFilterChain` because the starter uses `@ConditionalOnMissingBean`.
 
 ---
 
