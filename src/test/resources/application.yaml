@@ -1,0 +1,43 @@
+# Test Configuration
+# Uses H2 in-memory database for fast, isolated tests
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:test_db;DB_CLOSE_DELAY=-1;MODE=MySQL
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+
+  flyway:
+    enabled: false
+
+  jwt:
+    secret: test-secret-key-for-testing-minimum-256-bits-long-key-here
+    accessTokenExpiration: 900
+    refreshTokenExpiration: 604800
+
+cors:
+  allowed-origins:
+    - http://localhost:3000
+
+app:
+  security:
+    password:
+      min-length: 8
+      max-length: 128
+      require-uppercase: true
+      require-lowercase: true
+      require-digit: true
+      require-special-char: true
+
+logging:
+  level:
+    root: WARN
+    com.krd.testapi: INFO
+    org.springframework.test: INFO
