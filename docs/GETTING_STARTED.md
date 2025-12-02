@@ -38,7 +38,19 @@ cd spring-api-template
 ```
 
 ### 3. Set Up Environment Variables
+The spring-dotenv dependency automatically loads the environment variables you set in the .env file on startup.
+#### Example:
+#### .env file:           
+```JWT_SECRET=my-secret-key```
+#### application.yaml:    
+```jwt.secret: ${JWT_SECRET}```
+#### Result: 
+Spring sets jwt.secret to "my-secret-key"
 
+#### IMPORTANT:
+- Never commit .env to version control (it contains secrets)
+- .env is already in .gitignore
+- .env.example is committed as a template for other developers
 ```bash
 # Copy the example file
 cp .env.example .env
