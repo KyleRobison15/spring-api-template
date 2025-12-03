@@ -130,6 +130,15 @@ group = 'com.krd'
 
 // To:
 group = 'com.mycompany'
+
+// Update Flyway configuration to replace spring_api_db with your DB url:
+// Reads DB_USERNAME and DB_PASSWORD from .env file
+flyway {
+	url = "jdbc:mysql://localhost:3306/spring_api_db?createDatabaseIfNotExist=true"
+	user = getEnvVar('DB_USERNAME', '')
+	password = getEnvVar('DB_PASSWORD', '')
+	locations = ['classpath:db/migration']
+	cleanDisabled = false
 ```
 
 **Update `application.yaml`:**
