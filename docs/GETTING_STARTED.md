@@ -242,7 +242,7 @@ cors:
 spring:
   datasource:
     url: jdbc:mysql://localhost:3306/my_app_db?createDatabaseIfNotExist=true
-    username: root
+    username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
 ```
 
