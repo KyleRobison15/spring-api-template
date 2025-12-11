@@ -108,7 +108,7 @@ Claude, I see BaseUserRepository has soft-delete support. Can you explain how th
 Claude, what JWT configuration options are available from the starter? Show me how to adjust token expiration times.
 ```
 
-Claude can reference `docs/STARTER_REFERENCE.md` for detailed information about what the starter provides.
+Claude can reference the [Spring API Starter README](https://github.com/KyleRobison15/krd-spring-starters/tree/main/spring-api-starter) for detailed information about what the starter provides.
 
 ---
 
@@ -139,6 +139,30 @@ Claude, my organization requires:
 - Must not contain user's email or name
 
 Please update the password policy configuration and explain how the validation works.
+```
+
+### Working with Exception Handling
+
+```
+Claude, I need to add error handling for my new ProductNotFoundException. Please:
+1. Show me the current GlobalExceptionHandler structure
+2. Add a handler for ProductNotFoundException that returns 404
+3. Explain why we use ErrorResponse from the starter
+4. Show an example error response
+```
+
+```
+Claude, can you explain the exception handling architecture in this template? Specifically:
+- Why are there no @ExceptionHandler methods in BaseUserController?
+- How does @Order(HIGHEST_PRECEDENCE) work?
+- What HTTP status codes should I use for different error types?
+```
+
+```
+Claude, a client reported getting a 500 error with message "An unexpected error occurred". Can you:
+1. Check the GlobalExceptionHandler catch-all handler
+2. Suggest what specific exception I should be catching instead
+3. Help me add a more specific handler for this case
 ```
 
 ---
@@ -330,7 +354,7 @@ Claude, are there any TODO comments I haven't addressed yet?
 
 2. **Provide Context**: Mention your project name, domain, and requirements upfront
 
-3. **Reference Documentation**: Ask Claude to check `docs/STARTER_REFERENCE.md` for starter details
+3. **Reference Documentation**: Ask Claude to check the [Spring API Starter README](https://github.com/KyleRobison15/krd-spring-starters/tree/main/spring-api-starter) for starter details
 
 4. **Review Changes**: Always review what Claude suggests before applying
 
@@ -381,6 +405,5 @@ Here's a complete workflow for adding a new feature:
 **Happy coding with Claude!** 🎉
 
 For more information:
-- [README.md](../README.md) - Quick start and customization checklist
-- [GETTING_STARTED.md](GETTING_STARTED.md) - Detailed setup guide
-- [STARTER_REFERENCE.md](STARTER_REFERENCE.md) - Complete starter API reference
+- [README.md](README.md) - Complete setup, customization, and feature guide
+- [Spring API Starter README](https://github.com/KyleRobison15/krd-spring-starters/tree/main/spring-api-starter) - Starter feature documentation

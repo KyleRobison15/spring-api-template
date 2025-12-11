@@ -6,19 +6,66 @@ By using a convention-over-configuration approach to standardize the foundationa
 
 Use this template to start building features in minutes instead of hours.
 
-## 📚 What's Included
+---
 
-This template uses the [KRD Spring API Starter](../krd-spring-starters) which provides:
+## 📑 Table of Contents
+
+1. [About the Starter](#-about-the-starter)
+2. [Technology Stack](#-technology-stack)
+3. [Quick Start](#-quick-start)
+4. [Customization Checklist](#-customization-checklist)
+5. [Adding Custom Features](#-adding-custom-features)
+6. [Testing Your API](#-testing-your-api)
+7. [Deployment](#-deployment)
+8. [Documentation & Resources](#-documentation--resources)
+
+---
+
+## 📚 About the Starter
+
+This template uses the **[KRD Spring API Starter](https://github.com/KyleRobison15/krd-spring-starters/tree/main/spring-api-starter)** (`com.krd:spring-api-starter:1.0.0`), which provides complete authentication and user management functionality out of the box.
+
+### What the Starter Provides
 
 - **JWT Authentication** - Dual-token system (access + refresh)
-- **User Management** - Complete CRUD with soft delete, re-activation, and hard delete after x days
-- **Password Validation** - Configurable password policies (defaults to OWASP and NIST SP 800-63B password guidelines)
-- **Role Management** - Add/remove roles with audit logging
-- **Database Migrations** - V1 migration for users and roles tables (based on [starter template](https://github.com/KyleRobison15/krd-spring-starters/blob/main/spring-api-starter/src/main/resources/db/migration-templates/create_users_and_roles_tables.sql))
-- **API Documentation** - Swagger UI with Springdoc OpenAPI
-- **Security** - Pre-configured Spring Security with JWT filter
+- **User Management** - Complete CRUD with soft delete & auto-reactivation
+- **Password Validation** - Configurable password policies (OWASP/NIST compliant)
+- **Role Management** - Role-based access control with audit logging
+- **Exception Handling** - Standardized error responses (RFC 7807 compliant)
+- **Security** - Pre-configured Spring Security with modular SecurityRules
+- **Scheduled Tasks** - Automatic cleanup of soft-deleted users
 
-See [docs/STARTER_REFERENCE.md](docs/STARTER_REFERENCE.md) for complete documentation.
+### Documentation Reference
+
+For complete documentation about the starter's features, configuration, and API reference:
+
+**👉 [Spring API Starter README](https://github.com/KyleRobison15/krd-spring-starters/tree/main/spring-api-starter)** (Single source of truth)
+
+**Quick Links to Key Sections:**
+
+| Topic | Link |
+|-------|------|
+| **Getting Started** | [Quick Start](https://github.com/KyleRobison15/krd-spring-starters/tree/main/spring-api-starter#quick-start) · [Installation](https://github.com/KyleRobison15/krd-spring-starters/tree/main/spring-api-starter#installation) · [Configuration](https://github.com/KyleRobison15/krd-spring-starters/tree/main/spring-api-starter#8-configure-application) |
+| **Core Components** | [BaseUser Entity](https://github.com/KyleRobison15/krd-spring-starters/tree/main/spring-api-starter#1-extend-baseuser) · [BaseUserRepository](https://github.com/KyleRobison15/krd-spring-starters/tree/main/spring-api-starter#2-create-repository) · [BaseUserService](https://github.com/KyleRobison15/krd-spring-starters/tree/main/spring-api-starter#5-create-service) |
+| **Key Features** | [JWT Authentication](https://github.com/KyleRobison15/krd-spring-starters/tree/main/spring-api-starter#features) · [Exception Handling](https://github.com/KyleRobison15/krd-spring-starters/tree/main/spring-api-starter#exception-handling-architecture) · [Password Validation](https://github.com/KyleRobison15/krd-spring-starters/tree/main/spring-api-starter#features) |
+| **API Reference** | [All Endpoints](https://github.com/KyleRobison15/krd-spring-starters/tree/main/spring-api-starter#api-endpoints) · [Exceptions](https://github.com/KyleRobison15/krd-spring-starters/tree/main/spring-api-starter#exceptions) · [Database Schema](https://github.com/KyleRobison15/krd-spring-starters/tree/main/spring-api-starter#database-schema) |
+
+### How This Template Uses the Starter
+
+- **User Entity** (`src/main/java/com/krd/api/users/User.java`) - Extends `BaseUser`, add custom fields here
+- **UserService** (`src/main/java/com/krd/api/users/UserService.java`) - Extends `BaseUserService`, inherits all user management
+- **Controllers** - Extend base controllers, automatically provide auth & user endpoints
+- **GlobalExceptionHandler** - Uses `ErrorResponse` DTO from starter for standardized errors
+- **Configuration** - All starter features configured via YAML properties
+
+### When to Reference What
+
+- **Working on Authentication/Users?** → Reference the [Starter README](https://github.com/KyleRobison15/krd-spring-starters/tree/main/spring-api-starter)
+- **Customizing the Template?** → Use this README's [Customization Checklist](#-customization-checklist)
+- **Adding New Features?** → See [Adding Custom Features](#-adding-custom-features) below
+- **Using Claude Code?** → See [CLAUDE.md](CLAUDE.md) for AI-assisted workflows
+
+---
 
 ## 🏗️ Technology Stack
 
@@ -33,57 +80,65 @@ See [docs/STARTER_REFERENCE.md](docs/STARTER_REFERENCE.md) for complete document
 - **Springdoc OpenAPI** - API documentation
 - **Gradle** - Build tool
 
+---
+
 ## ⚡ Quick Start
 
 ### Prerequisites
-- Java 21+
-- MySQL 8.0+
-- Gradle 8.11+ (or use included wrapper)
+
+- **Java 21+** - [Download](https://adoptium.net/)
+- **MySQL 8.0+** - [Download](https://dev.mysql.com/downloads/mysql/)
+- **Gradle 8.11+** - Optional, wrapper included
 
 ### Setup
 
-1. **Clone or use this template**
-   ```bash
-   # If using GitHub template: Click "Use this template" button
-   # Or clone directly:
-   git clone <your-repo-url>
-   cd spring-api-template
-   ```
+**1. Clone or use this template**
+```bash
+# Click "Use this template" on GitHub
+# Or clone directly:
+git clone <your-repo-url>
+cd spring-api-template
+```
 
-2. **Configure environment variables**
-   ```bash
-   cp .env.example .env
-   # Edit .env and update JWT_SECRET and DB_PASSWORD
-   ```
+**2. Configure environment variables**
+```bash
+cp .env.example .env
 
-3. **Create database**
-   ```bash
-   mysql -u root -p
-   CREATE DATABASE spring_api_db;
-   exit
-   ```
+# Generate a secure JWT secret
+openssl rand -base64 32
 
-4. **Run database migrations** (optional - migrations also run automatically on app startup)
-   ```bash
-   ./gradlew flywayMigrate
-   ```
+# Edit .env and update:
+# - JWT_SECRET (paste the generated secret)
+# - DB_PASSWORD (your MySQL password)
+```
 
-5. **Run the application**
-   ```bash
-   ./gradlew bootRun
-   ```
+**3. Create database**
+```bash
+mysql -u root -p
+CREATE DATABASE spring_api_db;
+exit
+```
 
-6. **Access Swagger UI**
+**4. Run the application**
+```bash
+./gradlew bootRun
+```
 
-   Open [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+**5. Access Swagger UI**
 
-**That's it!** Your API is running with:
+Open [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+
+### ✅ You're Running!
+
+Your API now has:
 - ✅ JWT authentication (`/auth/login`, `/auth/refresh`, `/auth/me`)
 - ✅ User management (`/users` endpoints)
 - ✅ Password validation
 - ✅ Role-based access control
 - ✅ Soft delete with auto-reactivation
-- ✅ API documentation
+- ✅ Interactive API documentation
+
+---
 
 ## 📋 Customization Checklist
 
@@ -106,7 +161,7 @@ Search for `TODO` comments throughout the codebase for all customization points.
 - [ ] **All Java files** - Replace package `com.krd.api` with `com.yourcompany.yourapp`
   - *Why:* Package names should reflect your organization
   - *Files affected:* All `.java` files in `src/main/java/com/krd/api/`
-  - *Important:* Also update `@EnableJpaRepositories` and `@EntityScan` in `SpringApiTemplateApplication.java`
+  - *Important:* Also update `@EnableJpaRepositories` and `@EntityScan` in main application class
 
 ### 3. Security Configuration
 
@@ -148,9 +203,20 @@ Search for `TODO` comments throughout the codebase for all customization points.
 - [ ] **`application-prod.yaml`** - Update logging package from `com.krd.api`
   - *Why:* Logging should target your application's package
 
-### 6. User Management
+### 6. Exception Handling
 
-- [ ] **`application.yaml`** - Review `user-management.hard-delete.retention-days`
+- [ ] **`GlobalExceptionHandler.java`** - Review catch-all exception handler
+  - *Why:* Add custom exception handlers for your domain-specific exceptions
+  - *Location:* `src/main/java/com/krd/api/common/GlobalExceptionHandler.java`
+  - *Note:* The template includes production-ready handlers for all starter exceptions
+
+- [ ] **`GlobalExceptionHandler.java`** - Update catch-all handler message if needed
+  - *Why:* Customize error messages for your application
+  - *Default:* "An unexpected error occurred. Please try again later."
+
+### 7. User Management
+
+- [ ] **`application.yaml`** - Review `app.user.hard-delete-after-days`
   - *Why:* Set data retention policy for your compliance requirements
   - *Default:* 365 days
 
@@ -161,7 +227,7 @@ Search for `TODO` comments throughout the codebase for all customization points.
 - [ ] **`UserDto.java`** - Add custom fields to match User entity
   - *Why:* DTOs should include your custom fields for API responses
 
-### 7. Environment Variables
+### 8. Environment Variables
 
 - [ ] **`.env`** - Generate secure JWT_SECRET
   - *Why:* Default value is insecure
@@ -176,16 +242,392 @@ Search for `TODO` comments throughout the codebase for all customization points.
 - [ ] **`.env`** - Set production FRONTEND_URL (when deploying)
   - *Why:* Production CORS needs your actual frontend domain
 
-### 8. Application Name
+### 9. Application Name
 
 - [ ] **`application.yaml`** - Update `spring.application.name`
   - *Why:* Used in logging, monitoring, and service discovery
 
-## 📖 Documentation
+---
 
-- [Getting Started Guide](docs/GETTING_STARTED.md) - Detailed setup and customization
-- [Starter Reference](docs/STARTER_REFERENCE.md) - Complete API reference for the starter
-- [Claude Code Guide](docs/CLAUDE.md) - Using this template with Claude Code
+## 🔧 Adding Custom Features
+
+### Database Migrations
+
+This template includes a V1 migration that creates the base tables required by the spring-api-starter. See the [Database Schema](https://github.com/KyleRobison15/krd-spring-starters/tree/main/spring-api-starter#database-schema) documentation for details.
+
+**Start your custom migrations from V2__:**
+- `V2__add_custom_user_fields.sql`
+- `V3__create_orders_table.sql`
+- `V4__create_products_table.sql`
+
+**Running migrations:**
+```bash
+./gradlew flywayMigrate  # Run all pending migrations
+./gradlew flywayInfo     # Show migration status
+```
+
+Migrations also run automatically on application startup.
+
+### Adding Custom User Fields
+
+The template's `User` entity extends `BaseUser` from the spring-api-starter. See the [BaseUser Entity](https://github.com/KyleRobison15/krd-spring-starters/tree/main/spring-api-starter#1-extend-baseuser) documentation for all inherited fields.
+
+**1. Update the User entity:**
+
+`src/main/java/com/yourcompany/yourapp/users/User.java`:
+```java
+@Entity
+@Table(name = "users")
+public class User extends BaseUser {
+    // Add your custom fields
+    @Column(name = "phone_number")
+    private String phoneNumber;
+
+    @Column(name = "birth_date")
+    private LocalDate birthDate;
+}
+```
+
+**2. Update the UserDto:**
+
+`src/main/java/com/yourcompany/yourapp/users/UserDto.java`:
+```java
+public class UserDto extends BaseUserDto {
+    // Add matching fields
+    private String phoneNumber;
+    private LocalDate birthDate;
+}
+```
+
+**3. Create a Flyway migration:**
+
+`src/main/resources/db/migration/V2__add_custom_user_fields.sql`:
+```sql
+ALTER TABLE users
+ADD COLUMN phone_number VARCHAR(20),
+ADD COLUMN birth_date DATE;
+```
+
+**4. MapStruct automatically maps matching fields** - no mapper changes needed!
+
+### Adding New Endpoints
+
+**1. Create an entity:**
+
+`src/main/java/com/yourcompany/yourapp/products/Product.java`:
+```java
+@Entity
+@Table(name = "products")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class Product {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false)
+    private String name;
+
+    private String description;
+
+    @Column(nullable = false)
+    private BigDecimal price;
+}
+```
+
+**2. Create a repository:**
+
+`src/main/java/com/yourcompany/yourapp/products/ProductRepository.java`:
+```java
+@Repository
+public interface ProductRepository extends JpaRepository<Product, Long> {
+    List<Product> findByNameContaining(String keyword);
+}
+```
+
+**3. Create a service:**
+
+`src/main/java/com/yourcompany/yourapp/products/ProductService.java`:
+```java
+@Service
+@AllArgsConstructor
+public class ProductService {
+    private final ProductRepository productRepository;
+
+    public List<Product> getAllProducts() {
+        return productRepository.findAll();
+    }
+
+    public Product getProduct(Long id) {
+        return productRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Product not found"));
+    }
+
+    public Product createProduct(Product product) {
+        return productRepository.save(product);
+    }
+}
+```
+
+**4. Create a controller:**
+
+`src/main/java/com/yourcompany/yourapp/products/ProductController.java`:
+```java
+@RestController
+@RequestMapping("/products")
+@AllArgsConstructor
+@Tag(name = "Products")
+public class ProductController {
+    private final ProductService productService;
+
+    @GetMapping
+    public List<Product> getAllProducts() {
+        return productService.getAllProducts();
+    }
+
+    @GetMapping("/{id}")
+    public Product getProduct(@PathVariable Long id) {
+        return productService.getProduct(id);
+    }
+
+    @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public Product createProduct(@RequestBody Product product) {
+        return productService.createProduct(product);
+    }
+}
+```
+
+**5. Create a Flyway migration:**
+
+`src/main/resources/db/migration/V3__create_products_table.sql`:
+```sql
+CREATE TABLE products (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    price DECIMAL(10, 2) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+### Configuring Security Rules
+
+The template uses the **SecurityRules pattern** from the spring-api-starter for modular security configuration.
+
+**Default behavior:** All endpoints require authentication except:
+- `/auth/**` (login, refresh)
+- `POST /users` (registration)
+- `/swagger-ui/**`, `/v3/api-docs/**` (API docs)
+
+**To add custom security rules:**
+
+```java
+@Component
+public class ProductSecurityRules implements SecurityRules {
+    @Override
+    public void configure(AuthorizeHttpRequestsConfigurer<HttpSecurity>
+                         .AuthorizationManagerRequestMatcherRegistry registry) {
+        registry
+            .requestMatchers(HttpMethod.GET, "/products/**").permitAll()
+            .requestMatchers(HttpMethod.POST, "/products").authenticated()
+            .requestMatchers(HttpMethod.DELETE, "/products/**").hasRole("ADMIN");
+    }
+}
+```
+
+The starter automatically discovers and applies all `SecurityRules` components. See the template's existing examples:
+- `src/main/java/com/krd/api/users/UserSecurityRules.java`
+- `src/main/java/com/krd/api/auth/AuthSecurityRules.java`
+
+For complete security documentation, see the [spring-api-starter Security documentation](https://github.com/KyleRobison15/krd-spring-starters/tree/main/spring-api-starter#features).
+
+### Exception Handling
+
+The template includes a production-ready `GlobalExceptionHandler` that provides standardized error responses using the `ErrorResponse` DTO from the spring-api-starter.
+
+**Built-in handlers include:**
+- Validation errors (400)
+- Authentication failures (401)
+- Authorization denials (403)
+- Resource not found (404)
+- Duplicate resources (409 Conflict)
+- Unexpected errors (500)
+
+**To add custom exception handlers:**
+
+Add a new handler method to `src/main/java/com/krd/api/common/GlobalExceptionHandler.java`:
+
+```java
+@ExceptionHandler(ProductNotFoundException.class)
+public ResponseEntity<ErrorResponse> handleProductNotFoundException(
+        ProductNotFoundException ex, WebRequest request) {
+
+    ErrorResponse errorResponse = ErrorResponse.builder()
+        .timestamp(LocalDateTime.now())
+        .status(HttpStatus.NOT_FOUND.value())
+        .error(HttpStatus.NOT_FOUND.getReasonPhrase())
+        .message(ex.getMessage())
+        .path(getRequestPath(request))
+        .build();
+
+    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+}
+```
+
+For complete documentation on exception handling architecture, error response format, and best practices, see the [Exception Handling Architecture](https://github.com/KyleRobison15/krd-spring-starters/tree/main/spring-api-starter#exception-handling-architecture) section in the starter README.
+
+---
+
+## 🧪 Testing Your API
+
+### Using Swagger UI
+
+1. Open http://localhost:8080/swagger-ui.html
+2. Find **POST /users** (Register User)
+3. Click "Try it out"
+4. Use this request body:
+
+```json
+{
+  "email": "admin@example.com",
+  "password": "Admin123!",
+  "firstName": "Admin",
+  "lastName": "User",
+  "username": "admin"
+}
+```
+
+5. Click "Execute" - you should get a 200 response
+
+### Testing Authentication
+
+**1. Register a user** (as shown above)
+
+**2. Login:**
+
+Find **POST /auth/login**:
+```json
+{
+  "email": "admin@example.com",
+  "password": "Admin123!"
+}
+```
+
+Response:
+```json
+{
+  "accessToken": "eyJhbGc...",
+  "refreshToken": "eyJhbGc..."
+}
+```
+
+**3. Use the access token:**
+
+Click "Authorize" button at the top of Swagger UI:
+- Enter: `Bearer eyJhbGc...` (your access token)
+- Click "Authorize"
+
+Now you can access protected endpoints!
+
+### Testing with cURL
+
+**Register:**
+```bash
+curl -X POST http://localhost:8080/users \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "user@example.com",
+    "password": "User123!",
+    "firstName": "Test",
+    "lastName": "User"
+  }'
+```
+
+**Login:**
+```bash
+curl -X POST http://localhost:8080/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "user@example.com",
+    "password": "User123!"
+  }'
+```
+
+**Get current user:**
+```bash
+curl http://localhost:8080/auth/me \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+```
+
+---
+
+## 🚀 Deployment
+
+### Environment Variables
+
+Set these in your production environment:
+
+```bash
+JWT_SECRET=<generated-secure-secret>
+DB_USERNAME=<production-db-user>
+DB_PASSWORD=<production-db-password>
+DATABASE_URL=jdbc:mysql://<host>:3306/<database>
+FRONTEND_URL=https://your-frontend-domain.com
+SPRING_PROFILES_ACTIVE=prod
+```
+
+### Database Migrations
+
+Flyway will automatically run migrations on startup. Ensure:
+- `V1__` migration creates users/roles tables (from starter)
+- `V2__+` migrations add your custom tables/fields
+
+### Build for Production
+
+```bash
+# Create executable JAR
+./gradlew clean build
+
+# JAR will be in: build/libs/your-app-name-0.0.1-SNAPSHOT.jar
+```
+
+### Run in Production
+
+```bash
+java -jar build/libs/your-app-name-0.0.1-SNAPSHOT.jar
+```
+
+Or deploy to Railway, AWS Elastic Beanstalk, Docker, etc.
+
+---
+
+## 📖 Documentation & Resources
+
+### Template Documentation
+
+- **[Claude Code Guide](CLAUDE.md)** - AI-assisted development with this template
+- **This README** - Complete template setup and customization guide
+
+### Starter Documentation
+
+- **[Spring API Starter README](https://github.com/KyleRobison15/krd-spring-starters/tree/main/spring-api-starter)** - Complete feature documentation
+  - [Quick Start Guide](https://github.com/KyleRobison15/krd-spring-starters/tree/main/spring-api-starter#quick-start)
+  - [Configuration Options](https://github.com/KyleRobison15/krd-spring-starters/tree/main/spring-api-starter#8-configure-application)
+  - [API Endpoints](https://github.com/KyleRobison15/krd-spring-starters/tree/main/spring-api-starter#api-endpoints)
+  - [Exception Handling Architecture](https://github.com/KyleRobison15/krd-spring-starters/tree/main/spring-api-starter#exception-handling-architecture)
+  - [Database Schema](https://github.com/KyleRobison15/krd-spring-starters/tree/main/spring-api-starter#database-schema)
+
+### Additional Resources
+
+- [Spring Boot Documentation](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/)
+- [Spring Security Documentation](https://docs.spring.io/spring-security/reference/index.html)
+- [MapStruct Documentation](https://mapstruct.org/)
+- [Flyway Documentation](https://flywaydb.org/documentation/)
+
+---
 
 ## 📄 License
 
