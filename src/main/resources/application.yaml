@@ -4,9 +4,8 @@ spring:
     name: spring-api-template
 
   # JWT Configuration
-  # TODO: Set JWT_SECRET environment variable (see .env.example)
   jwt:
-    secret: ${JWT_SECRET}
+    secret: ${JWT_SECRET} # Injected from .env file based on which Spring Profile is active
     # TODO: Review and adjust token expiration times based on your security requirements
     # Access token expiration (in seconds)
     # 900s = 15 minutes (recommended for production)

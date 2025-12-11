@@ -94,8 +94,8 @@ def getEnvVar(String key, String defaultValue = '') {
 // Reads DB_USERNAME and DB_PASSWORD from .env file
 flyway {
 	url = "jdbc:mysql://localhost:3306/spring_api_db?createDatabaseIfNotExist=true"
-	user = getEnvVar('DB_USERNAME', 'root')
-	password = getEnvVar('DB_PASSWORD', 'your-password')
+	user = getEnvVar('DB_USERNAME', '')
+	password = getEnvVar('DB_PASSWORD', '')
 	locations = ['classpath:db/migration']
 	cleanDisabled = false
 

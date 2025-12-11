@@ -7,7 +7,7 @@ spring:
     # TODO: Update database name (spring_api_db) to match your project
     url: jdbc:mysql://localhost:3306/spring_api_db?createDatabaseIfNotExist=true
     # TODO: Update database credentials (or use environment variables)
-    username: ${DB_USERNAME:root}
+    username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
 
   jpa:
