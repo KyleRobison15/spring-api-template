@@ -113,11 +113,31 @@ openssl rand -base64 32
 ```
 
 **3. Create database**
+
+Login to your local MySQL server.
 ```bash
 mysql -u root -p
-CREATE DATABASE spring_api_db;
-exit
 ```
+
+Create a new database on localhost, and a new user to access it.
+```sql
+CREATE DATABASE <your_database_name>
+    CHARACTER SET utf8mb4
+    COLLATE utf8mb4_unicode_ci;
+
+CREATE USER '<your_user>'@'localhost' IDENTIFIED BY '<your_user_password>';
+GRANT ALL PRIVILEGES ON <your_database_name>.* TO '<your_database_name>'@'localhost';
+FLUSH PRIVILEGES;
+```
+In IntelliJ Ultimate DB Tool
+1. Open IntelliJ DB Tool
+2. Create Datasource -> MySQL
+3. Host: localhost (on port 3306)
+4. User: root
+5. Password: password for your root user
+6. Apply and Ok
+7. Use IntelliJ's Query Console to run the SQL above for creating a new DB and User
+8. Alternatively, you can use IntelliJ's DB UI to create the DB and User
 
 **4. Run the application**
 ```bash
