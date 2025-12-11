@@ -143,26 +143,31 @@ Please update the password policy configuration and explain how the validation w
 
 ### Working with Exception Handling
 
+This template uses a **two-tier exception handling architecture**:
+1. **Automatic** - Common exceptions handled by exception-handling-starter (validation, auth, etc.)
+2. **Domain-specific** - Your custom exceptions in `ApiExceptionHandler.java`
+
 ```
 Claude, I need to add error handling for my new ProductNotFoundException. Please:
-1. Show me the current GlobalExceptionHandler structure
+1. Show me the current ApiExceptionHandler structure
 2. Add a handler for ProductNotFoundException that returns 404
-3. Explain why we use ErrorResponse from the starter
+3. Explain the two-tier exception handling architecture
 4. Show an example error response
 ```
 
 ```
 Claude, can you explain the exception handling architecture in this template? Specifically:
-- Why are there no @ExceptionHandler methods in BaseUserController?
-- How does @Order(HIGHEST_PRECEDENCE) work?
-- What HTTP status codes should I use for different error types?
+- What's the difference between automatic and domain-specific exception handling?
+- Which exceptions are handled automatically by the exception-handling-starter?
+- Why do we use @Order(HIGHEST_PRECEDENCE) in our ApiExceptionHandler?
+- When should I add a new exception handler vs. rely on the automatic ones?
 ```
 
 ```
-Claude, a client reported getting a 500 error with message "An unexpected error occurred". Can you:
-1. Check the GlobalExceptionHandler catch-all handler
-2. Suggest what specific exception I should be catching instead
-3. Help me add a more specific handler for this case
+Claude, I'm getting validation errors but they're not showing the field-level details. Can you:
+1. Explain how validation errors are handled automatically
+2. Show me what a validation error response looks like
+3. Help me understand which exceptions I need to handle vs. which are automatic
 ```
 
 ---

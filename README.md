@@ -31,7 +31,7 @@ This template uses the **[KRD Spring API Starter](https://github.com/KyleRobison
 - **User Management** - Complete CRUD with soft delete & auto-reactivation
 - **Password Validation** - Configurable password policies (OWASP/NIST compliant)
 - **Role Management** - Role-based access control with audit logging
-- **Exception Handling** - Standardized error responses (RFC 7807 compliant)
+- **Automatic Exception Handling** - Auto-configured handlers for common errors (validation, auth, etc.)
 - **Security** - Pre-configured Spring Security with modular SecurityRules
 - **Scheduled Tasks** - Automatic cleanup of soft-deleted users
 
@@ -55,7 +55,7 @@ For complete documentation about the starter's features, configuration, and API 
 - **User Entity** (`src/main/java/com/krd/api/users/User.java`) - Extends `BaseUser`, add custom fields here
 - **UserService** (`src/main/java/com/krd/api/users/UserService.java`) - Extends `BaseUserService`, inherits all user management
 - **Controllers** - Extend base controllers, automatically provide auth & user endpoints
-- **GlobalExceptionHandler** - Uses `ErrorResponse` DTO from starter for standardized errors
+- **ApiExceptionHandler** - Domain-specific exception handler (common exceptions handled automatically)
 - **Configuration** - All starter features configured via YAML properties
 
 ### When to Reference What
@@ -205,14 +205,14 @@ Search for `TODO` comments throughout the codebase for all customization points.
 
 ### 6. Exception Handling
 
-- [ ] **`GlobalExceptionHandler.java`** - Review catch-all exception handler
-  - *Why:* Add custom exception handlers for your domain-specific exceptions
-  - *Location:* `src/main/java/com/krd/api/common/GlobalExceptionHandler.java`
-  - *Note:* The template includes production-ready handlers for all starter exceptions
+- [ ] **`ApiExceptionHandler.java`** - Review domain-specific exception handlers
+  - *Why:* Template shows how to handle domain exceptions (UserNotFoundException, DuplicateUserException)
+  - *Location:* `src/main/java/com/krd/api/common/ApiExceptionHandler.java`
+  - *Note:* Common exceptions (validation, auth, etc.) are handled automatically by exception-handling-starter
 
-- [ ] **`GlobalExceptionHandler.java`** - Update catch-all handler message if needed
-  - *Why:* Customize error messages for your application
-  - *Default:* "An unexpected error occurred. Please try again later."
+- [ ] **`ApiExceptionHandler.java`** - Add handlers for your custom domain exceptions
+  - *Why:* As you add new features (e.g., Products), add exception handlers for domain-specific errors
+  - *Example:* Add `handleProductNotFoundException` for a Products feature
 
 ### 7. User Management
 
@@ -446,19 +446,29 @@ For complete security documentation, see the [spring-api-starter Security docume
 
 ### Exception Handling
 
-The template includes a production-ready `GlobalExceptionHandler` that provides standardized error responses using the `ErrorResponse` DTO from the spring-api-starter.
+This template uses a **two-tier exception handling architecture**:
 
-**Built-in handlers include:**
+#### 1. Automatic Exception Handling (from exception-handling-starter)
+
+Common exceptions are handled automatically with zero configuration:
 - Validation errors (400)
+- Malformed JSON (400)
 - Authentication failures (401)
 - Authorization denials (403)
-- Resource not found (404)
-- Duplicate resources (409 Conflict)
+- Unsupported media types (415)
 - Unexpected errors (500)
+
+**No code needed!** These are handled by the `GlobalExceptionHandler` from `exception-handling-starter`.
+
+#### 2. Domain-Specific Exception Handling (your application)
+
+The template includes `ApiExceptionHandler` showing how to handle **domain-specific exceptions**:
+- `UserNotFoundException` (404)
+- `DuplicateUserException` (409)
 
 **To add custom exception handlers:**
 
-Add a new handler method to `src/main/java/com/krd/api/common/GlobalExceptionHandler.java`:
+Add a new handler method to `src/main/java/com/krd/api/common/ApiExceptionHandler.java`:
 
 ```java
 @ExceptionHandler(ProductNotFoundException.class)
@@ -470,14 +480,16 @@ public ResponseEntity<ErrorResponse> handleProductNotFoundException(
         .status(HttpStatus.NOT_FOUND.value())
         .error(HttpStatus.NOT_FOUND.getReasonPhrase())
         .message(ex.getMessage())
-        .path(getRequestPath(request))
+        .path(request.getDescription(false).replace("uri=", ""))
         .build();
 
     return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
 }
 ```
 
-For complete documentation on exception handling architecture, error response format, and best practices, see the [Exception Handling Architecture](https://github.com/KyleRobison15/krd-spring-starters/tree/main/spring-api-starter#exception-handling-architecture) section in the starter README.
+**Note:** Import `ErrorResponse` from `com.krd.starter.exception.ErrorResponse`
+
+For complete documentation on the two-tier exception handling architecture, error response format, and best practices, see the [Exception Handling Architecture](https://github.com/KyleRobison15/krd-spring-starters/tree/main/spring-api-starter#exception-handling-architecture) section in the starter README.
 
 ---
 
