@@ -126,7 +126,7 @@ CREATE DATABASE <your_database_name>
     COLLATE utf8mb4_unicode_ci;
 
 CREATE USER '<your_user>'@'localhost' IDENTIFIED BY '<your_user_password>';
-GRANT ALL PRIVILEGES ON <your_database_name>.* TO '<your_database_name>'@'localhost';
+GRANT ALL PRIVILEGES ON <your_database_name>.* TO '<your_user>'@'localhost';
 FLUSH PRIVILEGES;
 ```
 In IntelliJ Ultimate DB Tool
