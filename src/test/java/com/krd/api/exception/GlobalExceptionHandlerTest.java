@@ -39,8 +39,8 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
-    @DisplayName("Validation errors return 400 with field-level error messages")
-    void validationErrors_Return400WithFieldErrors() throws Exception {
+    @DisplayName("Validation errors return 400 with standardized ErrorResponse structure")
+    void validationErrors_Return400WithStandardizedStructure() throws Exception {
         // Missing required fields and invalid password
         String invalidJson = """
                 {
@@ -53,13 +53,17 @@ class GlobalExceptionHandlerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(invalidJson))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$", instanceOf(java.util.Map.class)))
-                .andExpect(jsonPath("$.password").exists())
-                .andExpect(jsonPath("$.email").exists());
+                .andExpect(jsonPath("$.timestamp").exists())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.error").value("Bad Request"))
+                .andExpect(jsonPath("$.message").value("Validation failed for one or more fields"))
+                .andExpect(jsonPath("$.path").value("/users"))
+                .andExpect(jsonPath("$.errors").isArray())
+                .andExpect(jsonPath("$.errors[*].field", hasItems("password", "email")));
     }
 
     @Test
-    @DisplayName("Invalid email format returns validation error")
+    @DisplayName("Invalid email format returns validation error with field details")
     void invalidEmail_ReturnsValidationError() throws Exception {
         String invalidJson = """
                 {
@@ -74,7 +78,8 @@ class GlobalExceptionHandlerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(invalidJson))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.email").exists());
+                .andExpect(jsonPath("$.errors[?(@.field=='email')]").exists())
+                .andExpect(jsonPath("$.errors[?(@.field=='email')].message").exists());
     }
 
     @Test
@@ -90,13 +95,13 @@ class GlobalExceptionHandlerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(incompleteJson))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$").isMap())
-                .andExpect(jsonPath("$.email").exists())
-                .andExpect(jsonPath("$.password").exists());
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.errors").isArray())
+                .andExpect(jsonPath("$.errors[*].field", hasItems("email", "password")));
     }
 
     @Test
-    @DisplayName("Malformed JSON returns 400 with error message")
+    @DisplayName("Malformed JSON returns 400 with standardized error response")
     void malformedJson_Returns400() throws Exception {
         String malformedJson = "{ invalid json }";
 
@@ -104,7 +109,12 @@ class GlobalExceptionHandlerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(malformedJson))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.error").value("The request body is invalid"));
+                .andExpect(jsonPath("$.timestamp").exists())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.error").value("Bad Request"))
+                .andExpect(jsonPath("$.message").value("Malformed JSON request or invalid request body"))
+                .andExpect(jsonPath("$.path").value("/users"))
+                .andExpect(jsonPath("$.errors").doesNotExist()); // No field errors for malformed JSON
     }
 
     @Test
@@ -114,9 +124,8 @@ class GlobalExceptionHandlerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{}"))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$").isMap())
-                .andExpect(jsonPath("$.email").exists())
-                .andExpect(jsonPath("$.password").exists());
+                .andExpect(jsonPath("$.errors").isArray())
+                .andExpect(jsonPath("$.errors[*].field", hasItems("email", "password")));
     }
 
     @Test
@@ -144,12 +153,12 @@ class GlobalExceptionHandlerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(weakPasswordJson))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.password").exists())
-                .andExpect(jsonPath("$.password", containsString("at least")));
+                .andExpect(jsonPath("$.errors[?(@.field=='password')]").exists())
+                .andExpect(jsonPath("$.errors[?(@.field=='password')].message", hasItem(containsString("at least"))));
     }
 
     @Test
-    @DisplayName("Multiple validation errors are all returned")
+    @DisplayName("Multiple validation errors are all returned in errors array")
     void multipleValidationErrors_AllReturned() throws Exception {
         String multipleErrorsJson = """
                 {
@@ -164,8 +173,8 @@ class GlobalExceptionHandlerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(multipleErrorsJson))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$", instanceOf(java.util.Map.class)))
-                .andExpect(jsonPath("$.*", hasSize(greaterThan(1))));
+                .andExpect(jsonPath("$.errors").isArray())
+                .andExpect(jsonPath("$.errors", hasSize(greaterThan(1))));
     }
 
     @Test
@@ -184,9 +193,8 @@ class GlobalExceptionHandlerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(nullFieldsJson))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$").isMap())
-                .andExpect(jsonPath("$.email").exists())
-                .andExpect(jsonPath("$.password").exists());
+                .andExpect(jsonPath("$.errors").isArray())
+                .andExpect(jsonPath("$.errors[*].field", hasItems("email", "password")));
     }
 
     @Test
@@ -206,5 +214,25 @@ class GlobalExceptionHandlerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(extraFieldsJson))
                 .andExpect(status().isCreated());
+    }
+
+    @Test
+    @DisplayName("Error response includes rejected values for debugging")
+    void errorResponse_IncludesRejectedValues() throws Exception {
+        String invalidJson = """
+                {
+                    "email": "invalid-email",
+                    "password": "weak",
+                    "firstName": "Test",
+                    "lastName": "User"
+                }
+                """;
+
+        mockMvc.perform(post("/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(invalidJson))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errors[?(@.field=='email')].rejectedValue").value("invalid-email"))
+                .andExpect(jsonPath("$.errors[?(@.field=='password')].rejectedValue").value("weak"));
     }
 }
