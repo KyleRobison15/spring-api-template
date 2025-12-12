@@ -468,7 +468,7 @@ For complete security documentation, see the [spring-api-starter Security docume
 
 This template uses a **two-tier exception handling architecture**:
 
-#### 1. Automatic Exception Handling (from exception-handling-starter)
+#### 1. Automatic Exception Handling (from exception-handling-security-starter)
 
 Common exceptions are handled automatically with zero configuration:
 - Validation errors (400)
@@ -478,7 +478,9 @@ Common exceptions are handled automatically with zero configuration:
 - Unsupported media types (415)
 - Unexpected errors (500)
 
-**No code needed!** These are handled by the `GlobalExceptionHandler` from `exception-handling-starter`.
+**No code needed!** These are handled by:
+- `GlobalExceptionHandler` (from exception-handling-starter) - handles core exceptions
+- `SecurityExceptionHandler` (from exception-handling-security-starter) - handles Spring Security exceptions (401/403)
 
 #### 2. Domain-Specific Exception Handling (your application)
 
@@ -509,7 +511,21 @@ public ResponseEntity<ErrorResponse> handleProductNotFoundException(
 
 **Note:** Import `ErrorResponse` from `com.krd.starter.exception.ErrorResponse`
 
-For complete documentation on the two-tier exception handling architecture, error response format, and best practices, see the [Exception Handling Architecture](https://github.com/KyleRobison15/krd-spring-starters/tree/main/spring-api-starter#exception-handling-architecture) section in the starter README.
+#### Exception Handling Starters
+
+The template uses **exception-handling-security-starter** because it includes Spring Security. This starter:
+- Extends the core `exception-handling-starter` (no duplication)
+- Adds Security-specific handlers (401/403)
+- Automatically includes both `GlobalExceptionHandler` and `SecurityExceptionHandler`
+
+**Starter Selection Guide:**
+- ✅ **Use exception-handling-security-starter** - For APIs with Spring Security (like this template)
+- ✅ **Use exception-handling-starter** - For anonymous APIs without authentication
+
+**Documentation:**
+- [exception-handling-security-starter README](https://github.com/KyleRobison15/krd-spring-starters/tree/main/exception-handling-security-starter)
+- [exception-handling-starter README](https://github.com/KyleRobison15/krd-spring-starters/tree/main/exception-handling-starter)
+- [Exception Handling Architecture](https://github.com/KyleRobison15/krd-spring-starters/tree/main/spring-api-starter#exception-handling-architecture) (in spring-api-starter)
 
 ---
 
